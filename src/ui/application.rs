@@ -10,6 +10,12 @@ pub struct Application {
 /// and manages its interactions
 impl Application {
 
+    /// Loading GResources into the application
+    fn register_resources() {
+        let resource_bytes = include_bytes!("../../resources/resources.gresource");
+        let resource_data = glib::Bytes::from(&resource_bytes[..]);
+    }
+
     /// Creates new Application instance
     pub fn new() -> Application {
         let app: Application = Application {
