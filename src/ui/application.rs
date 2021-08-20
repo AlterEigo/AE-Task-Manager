@@ -4,7 +4,13 @@ pub struct Application {
     parent: gtk::Application,
 }
 
+/// Main TaskManager's class
+///
+/// Initializes all the essential parts of the application
+/// and manages its interactions
 impl Application {
+
+    /// Creates new Application instance
     pub fn new() -> Application {
         let app: Application = Application {
             parent: gtk::Application::builder()
@@ -26,6 +32,7 @@ impl Application {
         return app;
     }
 
+    /// Runs the application's main loop
     pub fn run(&self) -> i32 {
         self.parent.run()
     }
