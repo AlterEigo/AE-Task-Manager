@@ -1,3 +1,4 @@
 //! Collection of UI components
 
-pub mod Frame;
+pub mod frame;
+pub mod application;
