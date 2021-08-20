@@ -11,7 +11,7 @@ pub struct Application {
 impl Application {
 
     /// Loading GResources into the application
-    fn register_resources() {
+    fn register_resources(&self) {
         let resource_bytes = include_bytes!("../../resources/resources.gresource");
         let resource_data = gtk::glib::Bytes::from(&resource_bytes[..]);
         let res = gtk::gio::Resource::from_data(&resource_data).unwrap();
@@ -36,6 +36,7 @@ impl Application {
 
             window.show();
         });
+        app.register_resources();
 
         return app;
     }
