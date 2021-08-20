@@ -1,6 +1,10 @@
 use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow};
 
+mod ui;
+
+use crate::ui::Frame;
+
 fn main() {
     let app = Application::builder()
         .application_id("org.altereigo.tmanager")
