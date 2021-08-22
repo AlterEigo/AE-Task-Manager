@@ -1,4 +1,5 @@
 mod ui;
+mod core;
 
 use ui::{application::*};
 

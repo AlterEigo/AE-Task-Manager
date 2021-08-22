@@ -1,5 +1,7 @@
 use gtk::prelude::*;
 
+use crate::core::view;
+
 pub struct Application {
     parent: gtk::Application,
 }
@@ -19,7 +21,7 @@ impl Application {
     }
 
     /// Creates new Application instance
-    pub fn new() -> Application {
+    pub fn new() -> Self {
         let app: Application = Application {
             parent: gtk::Application::builder()
                 .application_id("org.altereigo.task-manager")
