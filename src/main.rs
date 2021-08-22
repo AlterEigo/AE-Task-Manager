@@ -1,6 +1,6 @@
 mod ui;
 
-use ui::{frame::*, application::*};
+use ui::{application::*};
 
 fn main() {
     let app = Application::new();
