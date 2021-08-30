@@ -1,2 +1,4 @@
+mod app;
+
 fn main() {
 }
