@@ -4,12 +4,12 @@
 
 use gtk::prelude::*;
 
-struct Application {
+pub struct Application {
     gtk_app: gtk::Application,
 }
 
 impl Application {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let instance = Application {
             gtk_app: gtk::Application::builder()
                 .application_id("Æ TaskManager")
@@ -28,7 +28,7 @@ impl Application {
         instance
     }
 
-    fn run(&self) -> i32 {
+    pub fn run(&self) -> i32 {
         self.gtk_app.run()
     }
 }
