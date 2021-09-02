@@ -17,15 +17,15 @@ impl Application {
     {
         Application {
             gtk_app: gtk::Application::builder()
-                .application_id("org.altereigo.tmanager")
+                .application_id("org.altereigo.ae-task-manager")
                 .build(),
         }
     }
 
     pub fn run(&self) -> i32 {
-        self.load_resources();
         // let root_widget: gtk::Widget = (*self.root).clone();
         self.gtk_app.connect_activate(move |app| {
+            Application::load_resources();
             let window = gtk::ApplicationWindow::builder()
                 .application(app)
                 .title("AE Task Manager")
@@ -38,7 +38,7 @@ impl Application {
         self.gtk_app.run()
     }
 
-    fn load_resources(&self) {
+    fn load_resources() {
         let bytes = include_bytes!("../../resources/resources.gresource");
         let resource_data = glib::Bytes::from(&bytes[..]);
         let res = gio::Resource::from_data(&resource_data).unwrap();
