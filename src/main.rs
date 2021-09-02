@@ -1,3 +1,4 @@
+mod prelude;
 mod app;
 
 fn main() {
