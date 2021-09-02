@@ -1,8 +1,13 @@
-mod prelude;
 mod app;
+mod auth;
+mod prelude;
+mod root;
+
+use gtk::prelude::*;
+use crate::prelude::*;
 
 fn main() {
-    let tm = app::Application::new();
-
+    let tm = Box::new(app::Application::new());
+    
     tm.run();
 }

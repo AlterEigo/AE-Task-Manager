@@ -5,6 +5,5 @@ pub trait Builder<T> {
 }
 
 pub trait View {
-    fn assemble(&self) -> Box<gtk::Widget>;
+    fn assemble(&self) -> gtk::Widget;
 }
-

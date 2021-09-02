@@ -5,38 +5,36 @@
 use gio::prelude::*;
 use gtk::prelude::*;
 
-mod root;
-
 use crate::prelude::*;
-use root::RootView;
+use crate::root::{RootView};
 
 pub struct Application {
-    gtk_app: Box<gtk::Application>,
-    root: Box<dyn View>,
+    gtk_app: gtk::Application,
 }
 
 impl Application {
-    pub fn new() -> Self {
+    pub fn new() -> Self
+    {
         Application {
-            gtk_app: Box::new(
-                gtk::Application::builder()
-                    .application_id("org.altereigo.tmanager")
-                    .build(),
-            ),
-            root: Box::new(RootView::new()),
+            gtk_app: gtk::Application::builder()
+                .application_id("org.altereigo.tmanager")
+                .build(),
         }
     }
 
     pub fn run(&self) -> i32 {
         self.load_resources();
-        let window = gtk::ApplicationWindow::builder()
-            .application(&*self.gtk_app)
-            .default_width(800)
-            .default_height(600)
-            .title("AE Task Manager")
-            .build();
-        window.set_child(Some(&*self.root.assemble()));
-        self.gtk_app.connect_activate(move |_app| window.present());
+        // let root_widget: gtk::Widget = (*self.root).clone();
+        self.gtk_app.connect_activate(move |app| {
+            let window = gtk::ApplicationWindow::builder()
+                .application(app)
+                .title("AE Task Manager")
+                .build();
+            let root = RootView::new();
+            let root = root.assemble();
+            window.set_child(Some(&root));
+            window.present();
+        });
         self.gtk_app.run()
     }
 
