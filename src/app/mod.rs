@@ -24,15 +24,13 @@ impl Application {
 
     pub fn run(&self) -> i32 {
         // let root_widget: gtk::Widget = (*self.root).clone();
+        Application::load_resources();
+        let window = gtk::ApplicationWindow::builder()
+            .title("AE Task Manager")
+            .build();
+        window.set_child(Some(&RootView::new().assemble()));
         self.gtk_app.connect_activate(move |app| {
-            Application::load_resources();
-            let window = gtk::ApplicationWindow::builder()
-                .application(app)
-                .title("AE Task Manager")
-                .build();
-            let root = RootView::new();
-            let root = root.assemble();
-            window.set_child(Some(&root));
+            window.set_application(Some(app));
             window.present();
         });
         self.gtk_app.run()
