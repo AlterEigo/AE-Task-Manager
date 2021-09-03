@@ -28,7 +28,7 @@ impl Application {
         let window = gtk::ApplicationWindow::builder()
             .title("AE Task Manager")
             .build();
-        window.set_child(Some(&RootView::new().assemble()));
+        window.set_child(Some(&RootView::assemble()));
         self.gtk_app.connect_activate(move |app| {
             window.set_application(Some(app));
             window.present();
