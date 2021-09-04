@@ -6,15 +6,14 @@ use gio::prelude::*;
 use gtk::prelude::*;
 
 use crate::prelude::*;
-use crate::root::{RootView};
+use crate::root::RootView;
 
 pub struct Application {
     gtk_app: gtk::Application,
 }
 
 impl Application {
-    pub fn new() -> Self
-    {
+    pub fn new() -> Self {
         Application {
             gtk_app: gtk::Application::builder()
                 .application_id("org.altereigo.ae-task-manager")
@@ -28,7 +27,8 @@ impl Application {
         let window = gtk::ApplicationWindow::builder()
             .title("AE Task Manager")
             .build();
-        window.set_child(Some(&RootView::assemble()));
+        let root = RootView::new();
+        window.set_child(Some(&root.assemble()));
         self.gtk_app.connect_activate(move |app| {
             window.set_application(Some(app));
             window.present();
