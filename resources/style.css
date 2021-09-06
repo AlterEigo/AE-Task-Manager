@@ -1,0 +1,21 @@
+.auth {
+    min-width: 800px;
+    min-height: 600px;
+    font-size: 30px;
+}
+
+.auth .central-col {
+    min-width: 500px;
+}
+
+.entry-label {
+    border-radius: 0;
+    border-bottom-left-radius: 0.5rem;
+    border-top-left-radius: 0.5rem;
+    background-color: rgb(230, 230, 230);
+    padding: 0 0.5rem;
+}
+
+.circled {
+    border-radius: 20% 20% 20% 20%;
+}

@@ -2,5 +2,6 @@
 <gresources>
     <gresource prefix="/org/altereigo/ae-task-manager">
         <file>AuthFrame.glade</file>
+        <file>style.css</file>
     </gresource>
 </gresources>
