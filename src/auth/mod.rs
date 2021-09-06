@@ -3,7 +3,6 @@ use gtk::prelude::*;
 
 pub struct AuthView;
 impl AuthView {
-    
     pub fn new() -> Self {
         AuthView {}
     }
