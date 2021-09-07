@@ -74,7 +74,7 @@ impl MainDb {
         let connection = sqlite::Connection::open_with_flags(name, flags.set_create())?;
         connection.execute("
             CREATE TABLE users (
-                user_id int,
+                user_id varchar(255),
                 first_name varchar(255),
                 last_name varchar(255),
                 email varchar(255),
