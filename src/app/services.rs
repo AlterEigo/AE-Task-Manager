@@ -3,7 +3,7 @@ use crate::app::models::{User};
 use crate::prelude::{Form, Result};
 
 pub trait DbService {
-    fn connection(&self) -> &sqlite::Connection;
+    fn connection(&self) -> sqlite::Connection;
 }
 
 pub trait UserService {
