@@ -12,7 +12,7 @@ pub trait UserService {
 
     fn authenticate(&self, u: String, p: String) -> Result<Self::SessionId>;
 
-    fn info(&self, t: Self::SessionId) -> User;
+    fn info(&self, t: Self::SessionId) -> Result<User>;
 
     fn sign_up(&self) -> Self::SignUpForm;
 }
