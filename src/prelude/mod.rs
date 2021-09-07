@@ -1,11 +1,11 @@
-pub struct Error(Option<i32>, Option<String>);
+pub enum Error {
+    NotImplemented
+}
 impl Error {
-    pub fn code(&self) -> Option<i32> {
-        self.0
-    }
-
-    pub fn msg(&self) -> Option<String> {
-        self.1.clone()
+    pub fn msg(&self) -> &'static str {
+        match &self {
+            NotImplemented => "Not implemented."
+        }
     }
 }
 
