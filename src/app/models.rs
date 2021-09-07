@@ -1,20 +1,20 @@
-use crate::app::Error;
-use crate::prelude::Form;
+use crate::prelude::{Form, Result, Error};
 
-#[derive(Debug)]
 pub struct SignUpForm {
     first_name: String,
     last_name: String,
     email: String,
     username: String,
     password: String,
-    on_submit: fn(Self) -> Result<User, Error>,
+    on_submit: Box<dyn Fn(Self) -> Result<User>>
 }
 
 impl SignUpForm {
-    pub fn new(submit_action: fn(Self) -> Result<User, Error>) -> Self {
+    pub fn new<F>(submit_action: F) -> Self
+        where F: Fn(Self) -> Result<User> + 'static
+    {
         SignUpForm {
-            on_submit: submit_action,
+            on_submit: Box::new(submit_action),
             first_name: Default::default(),
             last_name: Default::default(),
             email: Default::default(),
@@ -60,7 +60,7 @@ impl SignUpForm {
 }
 
 impl Form<User> for SignUpForm {
-    fn submit(self) -> Result<User, Error> {
+    fn submit(self) -> Result<User> {
         (self.on_submit)(self)
     }
 }
