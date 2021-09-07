@@ -9,5 +9,5 @@ pub trait View {
 }
 
 pub trait Form<T> {
-    fn submit(&self) -> Result<T, Error>;
+    fn submit(self) -> Result<T, Error>;
 }
