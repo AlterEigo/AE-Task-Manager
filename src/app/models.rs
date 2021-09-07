@@ -8,11 +8,11 @@ pub struct SignUpForm {
     email: String,
     username: String,
     password: String,
-    on_submit: fn() -> Result<User, Error>,
+    on_submit: fn(Self) -> Result<User, Error>,
 }
 
 impl SignUpForm {
-    pub fn new(submit_action: fn() -> Result<User, Error>) -> Self {
+    pub fn new(submit_action: fn(Self) -> Result<User, Error>) -> Self {
         SignUpForm {
             on_submit: submit_action,
             first_name: Default::default(),
@@ -61,7 +61,7 @@ impl SignUpForm {
 
 impl Form<User> for SignUpForm {
     fn submit(self) -> Result<User, Error> {
-        (self.on_submit)()
+        (self.on_submit)(self)
     }
 }
 
