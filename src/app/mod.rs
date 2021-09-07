@@ -65,9 +65,6 @@ impl Application {
     }
 }
 
-pub struct SessionId(String);
-pub struct SignUpForm(String, String);
-
 struct MainDb {
     connection: sqlite::Connection,
 }

@@ -1,3 +1,5 @@
-pub struct UserModel;
-pub struct TaskModel;
-pub struct BoardModel;
+pub struct User;
+pub struct Task;
+pub struct Board;
+pub struct SessionId(String);
+pub struct SignUpForm(String, String);
