@@ -1,13 +1,16 @@
 pub enum Error {
     NotImplemented,
-    Unauthorized
+    Unauthorized,
+    NotFound
 }
 
 impl Error {
     pub fn msg(&self) -> &'static str {
         match &self {
-            NotImplemented => "Not implemented.",
-            Unauthorized => "Did not pass authentication."
+            NotImplemented => "NotImplemented: method or function not implemented.",
+            Unauthorized => "Unauthorized: did not pass authentication.",
+            NotFound => "NotFound: could not found requested data.",
+            _ => "Unknown: error type not described"
         }
     }
 }
