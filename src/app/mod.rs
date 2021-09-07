@@ -14,17 +14,6 @@ pub mod services;
 use models::*;
 use services::*;
 
-pub struct Error(Option<i32>, Option<String>);
-impl Error {
-    pub fn code(&self) -> Option<i32> {
-        self.0
-    }
-
-    pub fn msg(&self) -> Option<String> {
-        self.1.clone()
-    }
-}
-
 pub struct Application {
     gtk_app: gtk::Application,
     db_service: Option<Box<dyn DbService>>,
@@ -121,5 +110,16 @@ impl MainDb {
 impl DbService for MainDb {
     fn connection(&self) -> &sqlite::Connection {
         &self.connection
+    }
+}
+
+struct UserManager {
+
+}
+
+impl UserService for UserManager {
+    type SignUpForm = SignUpForm;
+
+    fn authenticate(&self, u: String, p: String) -> Result<SessionId, Error> {
     }
 }
