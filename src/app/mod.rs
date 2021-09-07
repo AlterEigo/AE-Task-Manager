@@ -14,6 +14,17 @@ pub mod services;
 use models::*;
 use services::*;
 
+pub struct Error(Option<i32>, Option<String>);
+impl Error {
+    pub fn code(&self) -> Option<i32> {
+        self.0
+    }
+
+    pub fn msg(&self) -> Option<String> {
+        self.1
+    }
+}
+
 pub struct Application {
     gtk_app: gtk::Application,
     db_service: Option<Box<dyn DbService>>,
@@ -30,7 +41,7 @@ impl Application {
                 _ => {
                     println!("Database service could not be initialized.");
                     None
-                },
+                }
             },
         }
     }
@@ -72,7 +83,8 @@ struct MainDb {
 impl MainDb {
     fn create_new_db(name: &str, flags: sqlite::OpenFlags) -> sqlite::Result<sqlite::Connection> {
         let connection = sqlite::Connection::open_with_flags(name, flags.set_create())?;
-        connection.execute("
+        connection.execute(
+            "
             CREATE TABLE users (
                 user_id varchar(255),
                 first_name varchar(255),
@@ -82,19 +94,18 @@ impl MainDb {
                 password varchar(255),
                 salt varchar(255)
             );
-        ")?;
+        ",
+        )?;
         Ok(connection)
     }
 
     fn new() -> sqlite::Result<MainDb> {
-        let flags = sqlite::OpenFlags::new()
-            .set_read_write()
-            .set_full_mutex();
+        let flags = sqlite::OpenFlags::new().set_read_write().set_full_mutex();
         let dbname = "appdb.sqlite";
 
         let conn = match sqlite::Connection::open_with_flags(&dbname, flags.clone()) {
             Ok(conn) => Ok(conn),
-            _ => MainDb::create_new_db(&dbname, flags)
+            _ => MainDb::create_new_db(&dbname, flags),
         };
         match conn {
             Ok(conn) => Ok(MainDb { connection: conn }),
@@ -102,7 +113,7 @@ impl MainDb {
                 println!("Could not initialize connection.");
                 println!("Reason : {}", error.message.clone().unwrap());
                 Err(error)
-            },
+            }
         }
     }
 }
