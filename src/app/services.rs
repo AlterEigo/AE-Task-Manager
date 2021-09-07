@@ -7,12 +7,13 @@ pub trait DbService {
 }
 
 pub trait UserService {
-    type SignUpForm: Form<User>;
+    type UserModel;
+    type SignUpForm: Form<Self::UserModel>;
     type SessionId;
 
     fn authenticate(&self, u: String, p: String) -> Result<Self::SessionId>;
 
-    fn info(&self, t: Self::SessionId) -> Result<User>;
+    fn info(&self, t: Self::SessionId) -> Result<Self::UserModel>;
 
     fn sign_up(&self) -> Self::SignUpForm;
 }
