@@ -21,7 +21,7 @@ impl Error {
     }
 
     pub fn msg(&self) -> Option<String> {
-        self.1
+        self.1.clone()
     }
 }
 
