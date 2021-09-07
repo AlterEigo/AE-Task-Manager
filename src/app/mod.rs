@@ -8,6 +8,12 @@ use gtk::prelude::*;
 use crate::prelude::*;
 use crate::root::RootView;
 
+pub mod models;
+pub mod services;
+
+use models::*;
+use services::*;
+
 pub struct Application {
     gtk_app: gtk::Application,
     db_service: Option<Box<dyn DbService>>,
@@ -61,9 +67,6 @@ impl Application {
 
 pub struct SessionId(String);
 pub struct SignUpForm(String, String);
-pub struct UserModel;
-pub struct TaskModel;
-pub struct BoardModel;
 
 struct MainDb {
     connection: sqlite::Connection,
@@ -108,19 +111,3 @@ impl DbService for MainDb {
         &self.connection
     }
 }
-
-pub trait DbService {
-    fn connection(&self) -> &sqlite::Connection;
-}
-
-pub trait UserService {
-    fn authenticate(&self, u: String, p: String) -> Option<SessionId>;
-
-    fn info(&self, t: SessionId) -> UserModel;
-
-    fn register(&self, f: SignUpForm) -> Option<SessionId>;
-}
-
-pub trait TaskService {}
-
-pub trait BoardService {}
