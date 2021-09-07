@@ -113,13 +113,32 @@ impl DbService for MainDb {
     }
 }
 
-struct UserManager {
-
+struct UserManager<'a> {
+    db: &'a dyn DbService
 }
 
-impl UserService for UserManager {
-    type SignUpForm = SignUpForm;
+impl<'a> UserManager<'a> {
+    fn register_user(form: SignUpForm, db_conn: &sqlite::Connection) -> Result<User> {
+        Err(Error::NotImplemented)
+    }
+}
 
-    fn authenticate(&self, u: String, p: String) -> Result<SessionId, Error> {
+impl<'a> UserService for UserManager<'a> {
+    type UserModel = User;
+    type SignUpForm = SignUpForm<'a>;
+    type SessionId = SessionId;
+
+    fn authenticate(&self, u: String, p: String) -> Result<Self::SessionId> {
+        Err(Error::NotImplemented)
+    }
+
+    fn info(&self, id: Self::SessionId) -> Result<Self::UserModel> {
+        Err(Error::NotImplemented)
+    }
+
+    fn sign_up(&self) -> Self::SignUpForm {
+        let conn = self.db.connection();
+        let action = move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
+        SignUpForm::new(action)
     }
 }
