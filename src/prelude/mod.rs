@@ -1,19 +1,23 @@
+#[derive(Clone,Copy,Debug)]
 pub enum Error {
     NotImplemented,
     Unauthorized,
     NotFound,
     AlreadySubmitted,
-    DatabaseError
+    DatabaseError,
+    ServiceNotBound(&'static str),
 }
 
 impl Error {
-    pub fn msg(&self) -> &'static str {
-        match &self {
-            NotImplemented => "NotImplemented: method or function not implemented.",
-            Unauthorized => "Unauthorized: did not pass authentication.",
-            NotFound => "NotFound: could not found requested data.",
-            _ => "Unknown: error type not described",
-        }
+    pub fn what(&self) -> String {
+        let msg: String = match &self {
+            Error::NotImplemented => "NotImplemented: method or function not implemented.".to_string(),
+            Error::Unauthorized => "Unauthorized: did not pass authentication.".to_string(),
+            Error::NotFound => "NotFound: could not found requested data.".to_string(),
+            Error::ServiceNotBound(msg) => format!("ServiceNotBound: Could not perform operation because '{}' is not bound.", msg),
+            _ => "Unknown: error type not described".to_string(),
+        };
+        msg
     }
 }
 
