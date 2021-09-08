@@ -1,21 +1,17 @@
-use crate::app::models::User;
-
-use crate::prelude::{Form, Result};
+use crate::prelude::Result;
+use crate::app::models::{SessionId, User};
+use crate::app::forms::SignUpForm;
 
 pub trait DbService {
     fn connection(&self) -> &sqlite::Connection;
 }
 
 pub trait UserService {
-    type UserModel;
-    type SignUpForm: Form<Self::UserModel>;
-    type SessionId;
+    fn authenticate(&self, u: String, p: String) -> Result<SessionId>;
 
-    fn authenticate(&self, u: String, p: String) -> Result<Self::SessionId>;
+    fn info(&self, t: SessionId) -> Result<User>;
 
-    fn info(&self, t: Self::SessionId) -> Result<Self::UserModel>;
-
-    fn sign_up(&self) -> Self::SignUpForm;
+    fn sign_up(&self) -> SignUpForm;
 }
 
 pub trait TaskService {}
