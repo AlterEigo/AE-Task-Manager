@@ -11,7 +11,7 @@ pub trait UserService {
 
     fn info(&self, t: SessionId) -> Result<User>;
 
-    fn sign_up(&self) -> SignUpForm;
+    fn sign_up(&self) -> Result<SignUpForm>;
 }
 
 pub trait TaskService {}

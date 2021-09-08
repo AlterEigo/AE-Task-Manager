@@ -220,10 +220,14 @@ impl<'a> UserService for UserManager<'a> {
         Err(Error::NotImplemented)
     }
 
-    fn sign_up(&self) -> SignUpForm {
-        let conn = self.db.unwrap().connection();
-        let action =
-            move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
-        SignUpForm::new(action)
+    fn sign_up(&self) -> Result<SignUpForm> {
+        if let Some(db) = &self.db {
+            let conn = db.connection();
+            let action =
+                move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
+            Ok(SignUpForm::new(action))
+        } else {
+            Err(Error::DatabaseError)
+        }
     }
 }

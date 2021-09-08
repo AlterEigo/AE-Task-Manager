@@ -3,6 +3,7 @@ pub enum Error {
     Unauthorized,
     NotFound,
     AlreadySubmitted,
+    DatabaseError
 }
 
 impl Error {
