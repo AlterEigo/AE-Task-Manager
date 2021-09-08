@@ -10,9 +10,11 @@ use crate::root::RootView;
 
 pub mod models;
 pub mod services;
+pub mod forms;
 
 use models::*;
 use services::*;
+use forms::*;
 
 pub struct Application {
     gtk_app: gtk::Application,
