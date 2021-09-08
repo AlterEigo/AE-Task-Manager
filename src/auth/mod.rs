@@ -3,15 +3,23 @@ use gtk::prelude::*;
 
 use crate::app::services::UserService;
 
+#[derive(Default,Clone,Copy)]
 pub struct AuthView<'a> {
-    user_srv: &'a dyn UserService
+    user_srv: Option<&'a dyn UserService>
 }
 
 impl<'a> AuthView<'a> {
-    pub fn new(user_srv: &'a dyn UserService) -> Self
+    pub fn new() -> Self
     {
         AuthView {
-            user_srv: user_srv
+            ..Default::default()
+        }
+    }
+
+    pub fn user_service(self, value: &'a dyn UserService) -> Self {
+        AuthView {
+            user_srv: Some(value),
+            ..self
         }
     }
 
