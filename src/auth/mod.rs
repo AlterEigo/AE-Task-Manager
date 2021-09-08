@@ -10,9 +10,7 @@ pub struct AuthView {
 
 impl AuthView {
     pub fn new() -> Self {
-        AuthView {
-            user_srv: None
-        }
+        AuthView { user_srv: None }
     }
 
     pub fn user_service(self, value: Rc<dyn UserService>) -> Self {
@@ -37,7 +35,7 @@ impl AuthView {
     }
 
     fn bind_buttons(&self, builder: &gtk::Builder) {
-        let (e_login, e_password, b_signin)= (
+        let (e_login, e_password, b_signin) = (
             builder.object::<gtk::Entry>("e_username").unwrap(),
             builder.object::<gtk::Entry>("e_password").unwrap(),
             builder.object::<gtk::Button>("b_signin").unwrap(),

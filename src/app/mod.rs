@@ -34,16 +34,16 @@ impl Application {
         }
     }
 
-    pub fn database(self, value: Rc<dyn DbService>) -> Self {
+    pub fn database(self, value: Option<Rc<dyn DbService>>) -> Self {
         Application {
-            db_service: Some(value),
+            db_service: value,
             ..self
         }
     }
 
-    pub fn user_service(self, value: Rc<dyn UserService>) -> Self {
+    pub fn user_service(self, value: Option<Rc<dyn UserService>>) -> Self {
         Application {
-            user_service: Some(value),
+            user_service: value,
             ..self
         }
     }
@@ -135,15 +135,16 @@ pub struct UserManager {
 
 impl UserManager {
     pub fn new() -> Self {
-        UserManager {
-            db: None
-        }
+        UserManager { db: None }
     }
 
-    pub fn database(self, val: Rc<dyn DbService>) -> Self {
-        UserManager {
-            db: Some(val),
-            ..self
+    pub fn database(self, val: &Option<Rc<dyn DbService>>) -> Self {
+        match val {
+            Some(val) => UserManager {
+                db: Some(val.clone()),
+                ..self
+            },
+            _ => UserManager { db: None, ..self },
         }
     }
 
