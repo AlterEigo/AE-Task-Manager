@@ -1,10 +1,18 @@
 use crate::prelude::View;
 use gtk::prelude::*;
 
-pub struct AuthView;
-impl AuthView {
-    pub fn new() -> Self {
-        AuthView {}
+use crate::app::services::UserService;
+
+pub struct AuthView<'a> {
+    user_srv: &'a dyn UserService
+}
+
+impl<'a> AuthView<'a> {
+    pub fn new(user_srv: &'a dyn UserService) -> Self
+    {
+        AuthView {
+            user_srv: user_srv
+        }
     }
 
     fn action_sign_in(btn: &gtk::Button, username: &str, password: &str) {
@@ -43,7 +51,7 @@ impl AuthView {
     }
 }
 
-impl View for AuthView {
+impl<'a> View for AuthView<'a> {
     fn assemble(&self) -> gtk::Widget {
         let builder = gtk::Builder::from_resource("/org/altereigo/ae-task-manager/AuthFrame.glade");
 
