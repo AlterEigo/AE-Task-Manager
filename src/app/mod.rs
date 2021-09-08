@@ -78,7 +78,7 @@ impl<'a> Application<'a> {
     }
 }
 
-struct MainDb {
+pub struct MainDb {
     connection: sqlite::Connection,
 }
 
@@ -101,7 +101,7 @@ impl MainDb {
         Ok(connection)
     }
 
-    fn new() -> sqlite::Result<MainDb> {
+    pub fn new() -> sqlite::Result<MainDb> {
         let flags = sqlite::OpenFlags::new().set_read_write().set_full_mutex();
         let dbname = "appdb.sqlite";
 
@@ -126,14 +126,22 @@ impl DbService for MainDb {
     }
 }
 
-struct UserManager<'a> {
-    db: &'a dyn DbService,
+#[derive(Default,Clone,Copy)]
+pub struct UserManager<'a> {
+    db: Option<&'a dyn DbService>,
 }
 
 impl<'a> UserManager<'a> {
-    fn new(db: &'a dyn DbService) -> Self {
+    pub fn new() -> Self {
         UserManager {
-            db: db
+            ..Default::default()
+        }
+    }
+
+    pub fn database(self, val: &'a dyn DbService) -> Self {
+        UserManager {
+            db: Some(val),
+            ..self
         }
     }
 
