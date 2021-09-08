@@ -1,25 +1,26 @@
-use crate::prelude::{Form, Result, Error};
+use crate::prelude::{Error, Form, Result};
 
 pub struct SignUpForm<'a> {
-    first_name: String,
-    last_name: String,
-    email: String,
-    username: String,
-    password: String,
-    on_submit: Box<dyn FnOnce(Self) -> Result<User> + 'a>
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub username: String,
+    pub password: String,
+    on_submit: Option<Box<dyn FnOnce(Self) -> Result<User> + 'a>>,
 }
 
 impl<'a> SignUpForm<'a> {
     pub fn new<F>(submit_action: F) -> Self
-        where F: 'a + FnOnce(Self) -> Result<User>
+    where
+        F: 'a + FnOnce(Self) -> Result<User>,
     {
         SignUpForm {
-            on_submit: Box::new(submit_action),
+            on_submit: Some(Box::new(submit_action)),
             first_name: Default::default(),
             last_name: Default::default(),
             email: Default::default(),
             username: Default::default(),
-            password: Default::default()
+            password: Default::default(),
         }
     }
 
@@ -61,11 +62,15 @@ impl<'a> SignUpForm<'a> {
 
 impl<'a> Form<User> for SignUpForm<'a> {
     fn submit(self) -> Result<User> {
-        (self.on_submit)(self)
+        let cpy = SignUpForm {
+            on_submit: None,
+            ..self
+        };
+        (self.on_submit.unwrap())(cpy)
     }
 }
 
-#[derive(Default,Debug)]
+#[derive(Default, Debug)]
 pub struct User {
     first_name: String,
     last_name: String,
