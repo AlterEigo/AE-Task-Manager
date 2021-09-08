@@ -221,7 +221,7 @@ impl<'a> UserService for UserManager<'a> {
     }
 
     fn sign_up(&self) -> SignUpForm {
-        let conn = self.db.connection();
+        let conn = self.db.unwrap().connection();
         let action =
             move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
         SignUpForm::new(action)
