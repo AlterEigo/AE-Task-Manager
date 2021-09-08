@@ -43,7 +43,7 @@ impl AuthView {
             builder.object::<gtk::Button>("b_signin").unwrap(),
         );
 
-        if let Some(srv) = self.user_srv {
+        if let Some(srv) = self.user_srv.as_ref() {
             let user_srv = Rc::clone(&srv);
             b_signin.connect_clicked(move |btn| {
                 let username = String::from(e_login.text());

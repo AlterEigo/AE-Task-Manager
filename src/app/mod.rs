@@ -7,6 +7,7 @@ use gtk::prelude::*;
 
 use crate::prelude::*;
 use crate::root::RootView;
+use std::rc::Rc;
 
 pub mod forms;
 pub mod models;
@@ -16,13 +17,13 @@ use forms::*;
 use models::*;
 use services::*;
 
-pub struct Application<'a> {
+pub struct Application {
     gtk_app: gtk::Application,
-    db_service: Option<&'a dyn DbService>,
-    user_service: Option<&'a dyn UserService>,
+    db_service: Option<Rc<dyn DbService>>,
+    user_service: Option<Rc<dyn UserService>>,
 }
 
-impl<'a> Application<'a> {
+impl Application {
     pub fn new() -> Self {
         Application {
             gtk_app: gtk::Application::builder()
@@ -33,14 +34,14 @@ impl<'a> Application<'a> {
         }
     }
 
-    pub fn database(self, value: &'a dyn DbService) -> Self {
+    pub fn database(self, value: Rc<dyn DbService>) -> Self {
         Application {
             db_service: Some(value),
             ..self
         }
     }
 
-    pub fn user_service(self, value: &'a dyn UserService) -> Self {
+    pub fn user_service(self, value: Rc<dyn UserService>) -> Self {
         Application {
             user_service: Some(value),
             ..self
@@ -52,9 +53,11 @@ impl<'a> Application<'a> {
         let window = gtk::ApplicationWindow::builder()
             .title("AE Task Manager")
             .build();
-        let root = RootView::new()
-            .user_service(self.user_service.unwrap())
-            .assemble();
+        let mut root = RootView::new();
+        if let Some(srv) = self.user_service.as_ref() {
+            root = root.user_service(Rc::clone(&srv));
+        }
+        let root = root.assemble();
         window.set_child(Some(&root));
         let css_provider = gtk::CssProvider::new();
         css_provider.load_from_resource("/org/altereigo/ae-task-manager/style.css");
@@ -126,19 +129,18 @@ impl DbService for MainDb {
     }
 }
 
-#[derive(Default, Clone, Copy)]
-pub struct UserManager<'a> {
-    db: Option<&'a dyn DbService>,
+pub struct UserManager {
+    db: Option<Rc<dyn DbService>>,
 }
 
-impl<'a> UserManager<'a> {
+impl UserManager {
     pub fn new() -> Self {
         UserManager {
-            ..Default::default()
+            db: None
         }
     }
 
-    pub fn database(self, val: &'a dyn DbService) -> Self {
+    pub fn database(self, val: Rc<dyn DbService>) -> Self {
         UserManager {
             db: Some(val),
             ..self
@@ -211,7 +213,7 @@ impl<'a> UserManager<'a> {
     }
 }
 
-impl<'a> UserService for UserManager<'a> {
+impl UserService for UserManager {
     fn authenticate(&self, u: String, p: String) -> Result<SessionId> {
         Err(Error::NotImplemented)
     }

@@ -27,8 +27,9 @@ impl RootView {
 impl View for RootView {
     fn assemble(&self) -> gtk::Widget {
         let grid = gtk::Grid::builder().build();
+        let usrv: Rc<dyn UserService> = self.user_srv.as_ref().unwrap().clone();
         let auth = AuthView::new()
-            .user_service(self.user_srv.unwrap())
+            .user_service(usrv)
             .assemble();
         grid.attach(&auth, 0, 0, 1, 1);
         grid.show();
