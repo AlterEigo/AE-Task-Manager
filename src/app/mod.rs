@@ -8,18 +8,18 @@ use gtk::prelude::*;
 use crate::prelude::*;
 use crate::root::RootView;
 
+pub mod forms;
 pub mod models;
 pub mod services;
-pub mod forms;
 
+use forms::*;
 use models::*;
 use services::*;
-use forms::*;
 
 pub struct Application<'a> {
     gtk_app: gtk::Application,
     db_service: Option<&'a dyn DbService>,
-    user_service: Option<&'a dyn UserService>
+    user_service: Option<&'a dyn UserService>,
 }
 
 impl<'a> Application<'a> {
@@ -29,7 +29,7 @@ impl<'a> Application<'a> {
                 .application_id("org.altereigo.ae-task-manager")
                 .build(),
             db_service: None,
-            user_service: None
+            user_service: None,
         }
     }
 
@@ -126,7 +126,7 @@ impl DbService for MainDb {
     }
 }
 
-#[derive(Default,Clone,Copy)]
+#[derive(Default, Clone, Copy)]
 pub struct UserManager<'a> {
     db: Option<&'a dyn DbService>,
 }

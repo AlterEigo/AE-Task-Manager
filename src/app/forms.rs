@@ -1,5 +1,5 @@
-use crate::prelude::{Error, Form, Result};
 use crate::app::models::User;
+use crate::prelude::{Error, Form, Result};
 
 pub struct SignUpForm<'a> {
     pub first_name: String,
@@ -73,4 +73,3 @@ impl<'a> Form<User> for SignUpForm<'a> {
         }
     }
 }
-

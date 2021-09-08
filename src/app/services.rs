@@ -1,6 +1,6 @@
-use crate::prelude::Result;
-use crate::app::models::{SessionId, User};
 use crate::app::forms::SignUpForm;
+use crate::app::models::{SessionId, User};
+use crate::prelude::Result;
 
 pub trait DbService {
     fn connection(&self) -> &sqlite::Connection;

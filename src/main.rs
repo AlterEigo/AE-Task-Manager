@@ -13,9 +13,7 @@ fn main() {
 
     let db = MainDb::new().unwrap();
     let us = UserManager::new().database(&db);
-    let tm = Box::new(app::Application::new()
-        .database(&db)
-        .user_service(&us));
+    let tm = Box::new(app::Application::new().database(&db).user_service(&us));
 
     tm.run();
 }

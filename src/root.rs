@@ -6,7 +6,7 @@ use crate::prelude::View;
 
 #[derive(Default)]
 pub struct RootView<'a> {
-    user_srv: Option<&'a dyn UserService>
+    user_srv: Option<&'a dyn UserService>,
 }
 
 impl<'a> RootView<'a> {
