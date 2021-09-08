@@ -33,6 +33,20 @@ impl<'a> Application<'a> {
         }
     }
 
+    pub fn database(self, value: &'a dyn DbService) -> Self {
+        Application {
+            db_service: Some(value),
+            ..self
+        }
+    }
+
+    pub fn user_service(self, value: &'a dyn UserService) -> Self {
+        Application {
+            user_service: Some(value),
+            ..self
+        }
+    }
+
     pub fn run(&self) -> i32 {
         Application::load_resources();
         let window = gtk::ApplicationWindow::builder()
