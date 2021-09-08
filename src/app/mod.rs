@@ -16,35 +16,32 @@ use models::*;
 use services::*;
 use forms::*;
 
-pub struct Application {
+pub struct Application<'a> {
     gtk_app: gtk::Application,
-    db_service: Option<Box<dyn DbService>>,
+    db_service: Option<&'a dyn DbService>,
+    user_service: Option<&'a dyn UserService>
 }
 
-impl Application {
+impl<'a> Application<'a> {
     pub fn new() -> Self {
         Application {
             gtk_app: gtk::Application::builder()
                 .application_id("org.altereigo.ae-task-manager")
                 .build(),
-            db_service: match MainDb::new() {
-                Ok(initialized) => Some(Box::new(initialized)),
-                _ => {
-                    println!("Database service could not be initialized.");
-                    None
-                }
-            },
+            db_service: None,
+            user_service: None
         }
     }
 
     pub fn run(&self) -> i32 {
-        // let root_widget: gtk::Widget = (*self.root).clone();
         Application::load_resources();
         let window = gtk::ApplicationWindow::builder()
             .title("AE Task Manager")
             .build();
-        let root = RootView::new();
-        window.set_child(Some(&root.assemble()));
+        let root = RootView::new()
+            .user_service(self.user_service.unwrap())
+            .assemble();
+        window.set_child(Some(&root));
         let css_provider = gtk::CssProvider::new();
         css_provider.load_from_resource("/org/altereigo/ae-task-manager/style.css");
         gtk::StyleContext::add_provider_for_screen(
@@ -120,6 +117,12 @@ struct UserManager<'a> {
 }
 
 impl<'a> UserManager<'a> {
+    fn new(db: &'a dyn DbService) -> Self {
+        UserManager {
+            db: db
+        }
+    }
+
     fn unique_uid(db_conn: &sqlite::Connection) -> String {
         let mut stmt = db_conn
             .prepare(
