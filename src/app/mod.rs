@@ -187,19 +187,15 @@ impl<'a> UserManager<'a> {
 }
 
 impl<'a> UserService for UserManager<'a> {
-    type UserModel = User;
-    type SignUpForm = SignUpForm<'a>;
-    type SessionId = SessionId;
-
-    fn authenticate(&self, u: String, p: String) -> Result<Self::SessionId> {
+    fn authenticate(&self, u: String, p: String) -> Result<SessionId> {
         Err(Error::NotImplemented)
     }
 
-    fn info(&self, id: Self::SessionId) -> Result<Self::UserModel> {
+    fn info(&self, id: SessionId) -> Result<User> {
         Err(Error::NotImplemented)
     }
 
-    fn sign_up(&self) -> Self::SignUpForm {
+    fn sign_up(&self) -> SignUpForm {
         let conn = self.db.connection();
         let action =
             move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
