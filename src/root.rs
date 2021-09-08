@@ -1,20 +1,22 @@
 use gtk::prelude::*;
 
+use std::rc::Rc;
 use crate::app::services::UserService;
 use crate::auth::AuthView;
 use crate::prelude::View;
 
-#[derive(Default)]
-pub struct RootView<'a> {
-    user_srv: Option<&'a dyn UserService>,
+pub struct RootView {
+    user_srv: Option<Rc<dyn UserService>>,
 }
 
-impl<'a> RootView<'a> {
+impl RootView {
     pub fn new() -> Self {
-        Default::default()
+        RootView {
+            user_srv: None
+        }
     }
 
-    pub fn user_service(self, value: &'a dyn UserService) -> Self {
+    pub fn user_service(self, value: Rc<dyn UserService>) -> Self {
         RootView {
             user_srv: Some(value),
             ..self
@@ -22,7 +24,7 @@ impl<'a> RootView<'a> {
     }
 }
 
-impl<'a> View for RootView<'a> {
+impl View for RootView {
     fn assemble(&self) -> gtk::Widget {
         let grid = gtk::Grid::builder().build();
         let auth = AuthView::new()
