@@ -131,7 +131,7 @@ impl<'a> UserManager<'a> {
             .expect("Could not prepare DB statement.");
         loop {
             let uid = nanoid::nanoid!();
-            stmt.reset();
+            stmt.reset().unwrap();
             stmt.bind_by_name(":uid", uid.as_str())
                 .expect("Unsuccessful statement parameter binding.");
             if let sqlite::State::Done = stmt.next().unwrap() {
@@ -151,7 +151,7 @@ impl<'a> UserManager<'a> {
             .expect("Could not prepare DB statement.");
         loop {
             let salt = nanoid::nanoid!();
-            stmt.reset();
+            stmt.reset().unwrap();
             stmt.bind_by_name(":salt", salt.as_str())
                 .expect("Unsuccessful statement parameter binding.");
             if let sqlite::State::Done = stmt.next().unwrap() {
