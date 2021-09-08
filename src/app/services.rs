@@ -1,4 +1,4 @@
-use crate::app::models::{User};
+use crate::app::models::User;
 
 use crate::prelude::{Form, Result};
 

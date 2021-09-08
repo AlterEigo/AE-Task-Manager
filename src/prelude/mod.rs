@@ -1,7 +1,7 @@
 pub enum Error {
     NotImplemented,
     Unauthorized,
-    NotFound
+    NotFound,
 }
 
 impl Error {
@@ -10,7 +10,7 @@ impl Error {
             NotImplemented => "NotImplemented: method or function not implemented.",
             Unauthorized => "Unauthorized: did not pass authentication.",
             NotFound => "NotFound: could not found requested data.",
-            _ => "Unknown: error type not described"
+            _ => "Unknown: error type not described",
         }
     }
 }

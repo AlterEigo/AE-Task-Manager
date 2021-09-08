@@ -114,11 +114,72 @@ impl DbService for MainDb {
 }
 
 struct UserManager<'a> {
-    db: &'a dyn DbService
+    db: &'a dyn DbService,
 }
 
 impl<'a> UserManager<'a> {
+    fn unique_uid(db_conn: &sqlite::Connection) -> String {
+        let mut stmt = db_conn
+            .prepare(
+                "
+                SELECT COUNT(user_id)
+                FROM users
+                WHERE user_id = :uid",
+            )
+            .expect("Could not prepare DB statement.");
+        loop {
+            let uid = nanoid::nanoid!();
+            stmt.reset();
+            stmt.bind_by_name(":uid", uid.as_str())
+                .expect("Unsuccessful statement parameter binding.");
+            if let sqlite::State::Done = stmt.next().unwrap() {
+                break uid;
+            }
+        }
+    }
+
+    fn unique_salt(db_conn: &sqlite::Connection) -> String {
+        let mut stmt = db_conn
+            .prepare(
+                "
+                SELECT COUNT(user_id)
+                FROM users
+                WHERE salt = :salt",
+            )
+            .expect("Could not prepare DB statement.");
+        loop {
+            let salt = nanoid::nanoid!();
+            stmt.reset();
+            stmt.bind_by_name(":salt", salt.as_str())
+                .expect("Unsuccessful statement parameter binding.");
+            if let sqlite::State::Done = stmt.next().unwrap() {
+                break salt;
+            }
+        }
+    }
+
     fn register_user(form: SignUpForm, db_conn: &sqlite::Connection) -> Result<User> {
+        let mut cursor = db_conn
+            .prepare(
+                "
+                INSERT INTO users
+                VALUES (:uid, :fname, :lname, :email, :uname, :password, :salt);",
+            )
+            .expect("Could not prepare DB statement.")
+            .into_cursor();
+        let new_uid = Self::unique_uid(db_conn);
+        let salt = Self::unique_salt(db_conn);
+        cursor
+            .bind_by_name(vec![
+                (":uid", sqlite::Value::String(new_uid)),
+                (":fname", sqlite::Value::String(form.first_name)),
+                (":lname", sqlite::Value::String(form.last_name)),
+                (":email", sqlite::Value::String(form.email)),
+                (":uname", sqlite::Value::String(form.username)),
+                (":password", sqlite::Value::String(form.password)),
+                (":salt", sqlite::Value::String(salt)),
+            ])
+            .expect("Could not bind form values.");
         Err(Error::NotImplemented)
     }
 }
@@ -138,7 +199,8 @@ impl<'a> UserService for UserManager<'a> {
 
     fn sign_up(&self) -> Self::SignUpForm {
         let conn = self.db.connection();
-        let action = move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
+        let action =
+            move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
         SignUpForm::new(action)
     }
 }
