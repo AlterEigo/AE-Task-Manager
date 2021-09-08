@@ -66,7 +66,10 @@ impl<'a> Form<User> for SignUpForm<'a> {
             on_submit: None,
             ..self
         };
-        (self.on_submit.unwrap())(cpy)
+        match self.on_submit {
+            Some(action) => action(cpy),
+            _ => Err(Error::AlreadySubmitted),
+        }
     }
 }
 

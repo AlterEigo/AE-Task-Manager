@@ -2,6 +2,7 @@ pub enum Error {
     NotImplemented,
     Unauthorized,
     NotFound,
+    AlreadySubmitted,
 }
 
 impl Error {
