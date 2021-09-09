@@ -48,16 +48,20 @@ impl Application {
         }
     }
 
+    fn assemble_root(&self) -> gtk::Widget {
+        let mut view = RootView::new();
+        if let Some(srv) = &self.user_service {
+            view = view.user_service(&srv);
+        };
+        view.assemble()
+    }
+
     pub fn run(&self) -> i32 {
         Application::load_resources();
         let window = gtk::ApplicationWindow::builder()
             .title("AE Task Manager")
             .build();
-        let mut root = RootView::new();
-        if let Some(srv) = self.user_service.as_ref() {
-            root = root.user_service(Rc::clone(&srv));
-        }
-        let root = root.assemble();
+        let root = self.assemble_root();
         window.set_child(Some(&root));
         let css_provider = gtk::CssProvider::new();
         css_provider.load_from_resource("/org/altereigo/ae-task-manager/style.css");

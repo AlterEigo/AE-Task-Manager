@@ -13,9 +13,9 @@ impl AuthView {
         AuthView { user_srv: None }
     }
 
-    pub fn user_service(self, value: Rc<dyn UserService>) -> Self {
+    pub fn user_service(self, value: &Rc<dyn UserService>) -> Self {
         AuthView {
-            user_srv: Some(value),
+            user_srv: Some(value.clone()),
             ..self
         }
     }

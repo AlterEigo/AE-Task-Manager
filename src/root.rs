@@ -14,19 +14,26 @@ impl RootView {
         RootView { user_srv: None }
     }
 
-    pub fn user_service(self, value: Rc<dyn UserService>) -> Self {
+    pub fn user_service(self, value: &Rc<dyn UserService>) -> Self {
         RootView {
-            user_srv: Some(value),
+            user_srv: Some(value.clone()),
             ..self
         }
+    }
+
+    fn assemble_auth(&self) -> gtk::Widget {
+        let mut view = AuthView::new();
+        if let Some(srv) = &self.user_srv {
+            view = view.user_service(&srv);
+        };
+        view.assemble()
     }
 }
 
 impl View for RootView {
     fn assemble(&self) -> gtk::Widget {
         let grid = gtk::Grid::builder().build();
-        let usrv: Rc<dyn UserService> = self.user_srv.as_ref().unwrap().clone();
-        let auth = AuthView::new().user_service(usrv).assemble();
+        let auth = self.assemble_auth();
         grid.attach(&auth, 0, 0, 1, 1);
         grid.show();
         grid.dynamic_cast::<gtk::Widget>().unwrap()
