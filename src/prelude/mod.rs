@@ -6,6 +6,7 @@ pub enum Error {
     AlreadySubmitted,
     DatabaseError,
     ServiceNotBound(&'static str),
+    InitializationError,
 }
 
 impl Error {

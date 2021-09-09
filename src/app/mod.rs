@@ -34,16 +34,16 @@ impl Application {
         }
     }
 
-    pub fn database(self, value: Option<Rc<dyn DbService>>) -> Self {
+    pub fn database(self, value: &Rc<dyn DbService>) -> Self {
         Application {
-            db_service: value,
+            db_service: Some(value.clone()),
             ..self
         }
     }
 
-    pub fn user_service(self, value: Option<Rc<dyn UserService>>) -> Self {
+    pub fn user_service(self, value: &Rc<dyn UserService>) -> Self {
         Application {
-            user_service: value,
+            user_service: Some(value.clone()),
             ..self
         }
     }
@@ -104,7 +104,7 @@ impl MainDb {
         Ok(connection)
     }
 
-    pub fn new() -> sqlite::Result<MainDb> {
+    pub fn new() -> Result<MainDb> {
         let flags = sqlite::OpenFlags::new().set_read_write().set_full_mutex();
         let dbname = "appdb.sqlite";
 
@@ -116,8 +116,8 @@ impl MainDb {
             Ok(conn) => Ok(MainDb { connection: conn }),
             Err(error) => {
                 println!("Could not initialize connection.");
-                println!("Reason : {}", error.message.clone().unwrap());
-                Err(error)
+                println!("Reason : {:?}", error);
+                Err(Error::InitializationError)
             }
         }
     }
