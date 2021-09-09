@@ -138,13 +138,10 @@ impl UserManager {
         UserManager { db: None }
     }
 
-    pub fn database(self, val: &Option<Rc<dyn DbService>>) -> Self {
-        match val {
-            Some(val) => UserManager {
-                db: Some(val.clone()),
-                ..self
-            },
-            _ => UserManager { db: None, ..self },
+    pub fn database(self, val: &Rc<dyn DbService>) -> Self {
+        UserManager {
+            db: Some(val.clone()),
+            ..self
         }
     }
 
