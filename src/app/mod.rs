@@ -24,6 +24,28 @@ pub struct Application {
     user_service: Option<Rc<dyn UserService>>,
 }
 
+#[derive(Default,Clone)]
+pub struct ApplicationBuilder {
+    db: Option<Rc<dyn DbService>>,
+    us: Option<Rc<dyn UserService>>
+}
+
+impl ApplicationBuilder {
+    pub fn database(self, rc: &Rc<dyn DbService>) -> Self {
+        Self {
+            db: Some(rc.clone()),
+            ..self
+        }
+    }
+
+    pub fn user_service(self, rc: &Rc<dyn UserService>) -> Self {
+        Self {
+            us: Some(rc.clone()),
+            ..self
+        }
+    }
+}
+
 impl Application {
     pub fn new() -> Self {
         Application {
