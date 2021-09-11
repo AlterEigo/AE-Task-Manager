@@ -7,8 +7,11 @@ use crate::prelude::*;
 use gtk::prelude::*;
 use std::rc::Rc;
 
-use crate::app::services::*;
-use crate::app::{MainDb, UserManager};
+use crate::app::{
+    databases::MainDb,
+    UserManager,
+    services::*
+};
 
 fn main() {
     gtk::init().expect("Could not initialize GTK");
