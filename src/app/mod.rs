@@ -20,8 +20,8 @@ use services::*;
 
 pub struct Application {
     gtk_app: gtk::Application,
-    db_service: Option<Rc<dyn DbService>>,
-    user_service: Option<Rc<dyn UserService>>,
+    db_service: Rc<dyn DbService>,
+    user_service: Rc<dyn UserService>,
 }
 
 #[derive(Default,Clone)]
@@ -31,6 +31,23 @@ pub struct ApplicationBuilder {
 }
 
 impl ApplicationBuilder {
+    pub fn build(self) -> Result<Application> {
+        if let None = &self.us {
+            return Err(Error::BuilderError("Did not provide any user service."));
+        }
+        if let None = &self.db {
+            return Err(Error::BuilderError("Did not provide any database."))
+        }
+
+        Ok(Application {
+            gtk_app: gtk::Application::builder()
+                .application_id("org.altereigo.ae-task-manager")
+                .build(),
+            db_service: self.db.unwrap(),
+            user_service: self.us.unwrap(),
+        })
+    }
+
     pub fn database(self, rc: &Rc<dyn DbService>) -> Self {
         Self {
             db: Some(rc.clone()),
@@ -47,30 +64,6 @@ impl ApplicationBuilder {
 }
 
 impl Application {
-    pub fn new() -> Self {
-        Application {
-            gtk_app: gtk::Application::builder()
-                .application_id("org.altereigo.ae-task-manager")
-                .build(),
-            db_service: None,
-            user_service: None,
-        }
-    }
-
-    pub fn database(self, value: &Rc<dyn DbService>) -> Self {
-        Application {
-            db_service: Some(value.clone()),
-            ..self
-        }
-    }
-
-    pub fn user_service(self, value: &Rc<dyn UserService>) -> Self {
-        Application {
-            user_service: Some(value.clone()),
-            ..self
-        }
-    }
-
     fn assemble_root(&self) -> gtk::Widget {
         let mut view = RootView::new();
         if let Some(srv) = &self.user_service {
