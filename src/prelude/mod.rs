@@ -6,6 +6,7 @@ pub enum Error {
     AlreadySubmitted,
     DatabaseError,
     ServiceNotBound(&'static str),
+    BuilderError(&'static str),
     InitializationError,
 }
 
@@ -19,6 +20,10 @@ impl Error {
             Error::NotFound => "NotFound: could not found requested data.".to_string(),
             Error::ServiceNotBound(msg) => format!(
                 "ServiceNotBound: Could not perform operation because '{}' is not bound.",
+                msg
+            ),
+            Error::BuilderError(msg) => format!(
+                "BuilderError: {}",
                 msg
             ),
             _ => "Unknown: error type not described".to_string(),
