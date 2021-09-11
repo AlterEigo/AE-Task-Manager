@@ -20,7 +20,15 @@ fn main() {
     let db: Rc<dyn DbService> = Rc::new(MainDb::new().expect("Database not initialized."));
     let us: Rc<dyn UserService> = Rc::new(UserManager::new().database(&db));
 
-    let tm = Box::new(app::Application::new().database(&db).user_service(&us));
+    let tm = app::Application::builder()
+        .database(&db)
+        .user_service(&us)
+        .build();
+    if let Err(error) = &tm {
+        println!("Could not initialize application.");
+        panic!("{}", error.what());
+    }
+    let tm = tm.unwrap();
 
     tm.run();
 }

@@ -64,11 +64,13 @@ impl ApplicationBuilder {
 }
 
 impl Application {
+    pub fn builder() -> ApplicationBuilder {
+        Default::default()
+    }
+
     fn assemble_root(&self) -> gtk::Widget {
         let mut view = RootView::new();
-        if let Some(srv) = &self.user_service {
-            view = view.user_service(&srv);
-        };
+        view = view.user_service(&self.user_service);
         view.assemble()
     }
 
