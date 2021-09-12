@@ -75,7 +75,7 @@ impl UserManager {
         let new_uid = Self::unique_uid(db_conn);
         let salt = Self::unique_salt(db_conn);
         let values = vec![
-                (":uid", sqlite::Value::String(new_uid)),
+                (":uid", sqlite::Value::String(new_uid.clone())),
                 (":fname", sqlite::Value::String(form.first_name)),
                 (":lname", sqlite::Value::String(form.last_name)),
                 (":email", sqlite::Value::String(form.email)),
@@ -84,7 +84,8 @@ impl UserManager {
                 (":salt", sqlite::Value::String(salt)),
         ];
         match cursor.bind_by_name(values) {
-            _ => Err(Error::NotImplemented)
+            Ok(_) => Ok(SessionId(new_uid)),
+            Err(sql_err) => Err(Error::DatabaseError(sql_err))
         }
     }
 }
@@ -105,7 +106,7 @@ impl UserService for UserManager {
                 move |form: SignUpForm| -> Result<SessionId> { UserManager::register_user(form, conn) };
             Ok(SignUpForm::new(action))
         } else {
-            Err(Error::DatabaseError)
+            Err(Error::ServiceNotBound("Database service"))
         }
     }
 }
