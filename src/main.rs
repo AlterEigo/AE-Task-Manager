@@ -16,19 +16,16 @@ use crate::app::{
 fn main() {
     gtk::init().expect("Could not initialize GTK");
 
+    let db = MainDb::new().expect("Database not initialized.");
+    let db: Rc<dyn DbService> = Rc::new(db);
 
-    let db: Rc<dyn DbService> = Rc::new(MainDb::new().expect("Database not initialized."));
-    let us: Rc<dyn UserService> = Rc::new(UserManager::new().database(&db));
+    let us = UserManager::new().database(&db);
+    let us: Rc<dyn UserService> = Rc::new(us);
 
     let tm = app::Application::builder()
         .database(&db)
         .user_service(&us)
-        .build();
-    if let Err(error) = &tm {
-        println!("Could not initialize application.");
-        panic!("{}", error.what());
-    }
-    let tm = tm.unwrap();
+        .build().unwrap();
 
     tm.run();
 }
