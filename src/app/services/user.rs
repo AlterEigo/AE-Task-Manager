@@ -64,14 +64,10 @@ impl UserManager {
     }
 
     fn register_user(form: SignUpForm, db_conn: &sqlite::Connection) -> Result<SessionId> {
-        let mut cursor = db_conn
-            .prepare(
-                "
+        let mut stmt = db_conn.prepare("
                 INSERT INTO users
-                VALUES (:uid, :fname, :lname, :email, :uname, :password, :salt);",
-            )
-            .expect("Could not prepare DB statement.")
-            .into_cursor();
+                VALUES (:uid, :fname, :lname, :email, :uname, :password, :salt);
+            ")?;
         let new_uid = Self::unique_uid(db_conn);
         let salt = Self::unique_salt(db_conn);
         let values = vec![
@@ -83,10 +79,11 @@ impl UserManager {
                 (":password", sqlite::Value::String(form.password)),
                 (":salt", sqlite::Value::String(salt)),
         ];
-        match cursor.bind_by_name(values) {
-            Ok(_) => Ok(SessionId(new_uid)),
-            Err(sql_err) => Err(Error::DatabaseError(sql_err))
-        }
+        for pair in values.iter() {
+            stmt.bind_by_name(pair.0, &pair.1)?;
+        };
+        stmt.next()?;
+        Ok(SessionId(new_uid))
     }
 }
 

@@ -22,10 +22,8 @@ impl RootView {
     }
 
     fn assemble_auth(&self) -> gtk::Widget {
-        let mut view = AuthView::new();
-        if let Some(srv) = &self.user_srv {
-            view = view.user_service(&srv);
-        };
+        let us = self.user_srv.as_ref().unwrap();
+        let view = AuthView::new().user_service(us);
         view.assemble()
     }
 }
