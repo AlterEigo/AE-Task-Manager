@@ -46,8 +46,10 @@ impl AuthView {
             b_signin.connect_clicked(move |btn| {
                 let username = String::from(e_login.text());
                 let password = String::from(e_password.text());
-                if let Ok(form) = user_srv.sign_up() {
-                    form.username(username).password(password).submit();
+                if let Ok(id) = user_srv.authenticate(username, password) {
+                    println!("Authentication successfull! Id: {:#?}", id);
+                } else {
+                    println!("Unauthorized!");
                 }
                 // self.action_sign_in(btn, &username, &password);
             });
