@@ -19,11 +19,6 @@ fn main() {
     let db: Rc<dyn DbService> = Rc::new(db);
 
     let us = UserManager::new().database(&db);
-    us.sign_up().unwrap()
-        .username("Eigo".to_string())
-        .password("1234".to_string())
-        .submit().unwrap();
-
     let us: Rc<dyn UserService> = Rc::new(us);
 
     let tm = app::Application::builder()
