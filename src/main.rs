@@ -15,10 +15,15 @@ use crate::app::{
 fn main() {
     gtk::init().expect("Could not initialize GTK");
 
-    let db = MainDb::new().expect("Database not initialized.");
+    let db = MainDb::new();
     let db: Rc<dyn DbService> = Rc::new(db);
 
     let us = UserManager::new().database(&db);
+    us.sign_up().unwrap()
+        .username("Eigo".to_string())
+        .password("1234".to_string())
+        .submit().unwrap();
+
     let us: Rc<dyn UserService> = Rc::new(us);
 
     let tm = app::Application::builder()

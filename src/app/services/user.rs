@@ -98,9 +98,11 @@ impl UserService for UserManager {
 
     fn sign_up(&self) -> Result<SignUpForm> {
         if let Some(db) = &self.db {
-            let conn = db.connection();
+            let conn = db.connection().unwrap();
             let action =
-                move |form: SignUpForm| -> Result<SessionId> { UserManager::register_user(form, conn) };
+                move |form: SignUpForm| -> Result<SessionId> {
+                    UserManager::register_user(form, &conn)
+                };
             Ok(SignUpForm::new(action))
         } else {
             Err(Error::ServiceNotBound("Database service"))
