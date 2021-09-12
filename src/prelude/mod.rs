@@ -32,6 +32,13 @@ impl Error {
     }
 }
 
+impl From<sqlite::Error> for Error
+{
+    fn from(sql: sqlite::Error) -> Self {
+        Error::DatabaseError(sql)
+    }
+}
+
 pub type Result<Data> = std::result::Result<Data, Error>;
 
 pub trait Builder<T> {
