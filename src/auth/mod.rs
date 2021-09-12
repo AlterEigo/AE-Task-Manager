@@ -48,6 +48,7 @@ impl AuthView {
                 let password = String::from(e_password.text());
                 if let Ok(id) = user_srv.authenticate(username, password) {
                     println!("Authentication successfull! Id: {:#?}", id);
+                    println!("{:#?}", user_srv.info(id))
                 } else {
                     println!("Unauthorized!");
                 }
