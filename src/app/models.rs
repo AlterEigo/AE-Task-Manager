@@ -10,4 +10,6 @@ pub struct User {
 
 pub struct Task;
 pub struct Board;
+
+#[derive(Clone,Debug)]
 pub struct SessionId(pub String);
