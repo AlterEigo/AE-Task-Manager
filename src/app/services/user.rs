@@ -29,7 +29,7 @@ impl UserManager {
                 "
                 SELECT COUNT(user_id)
                 FROM users
-                WHERE user_id = :uid",
+                WHERE user_id = :uid;",
             )
             .expect("Could not prepare DB statement.");
         loop {
@@ -37,6 +37,8 @@ impl UserManager {
             stmt.reset().unwrap();
             stmt.bind_by_name(":uid", uid.as_str())
                 .expect("Unsuccessful statement parameter binding.");
+            stmt.next()
+                .expect("Unsuccessful statement advance.");
             if let sqlite::State::Done = stmt.next().unwrap() {
                 break uid;
             }
@@ -57,6 +59,8 @@ impl UserManager {
             stmt.reset().unwrap();
             stmt.bind_by_name(":salt", salt.as_str())
                 .expect("Unsuccessful statement parameter binding.");
+            stmt.next()
+                .expect("Unsuccessful statement advance");
             if let sqlite::State::Done = stmt.next().unwrap() {
                 break salt;
             }
