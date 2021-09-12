@@ -8,13 +8,13 @@ impl MainDb {
         connection.execute(
             "
             CREATE TABLE users (
-                user_id varchar(255),
+                user_id varchar(255) UNIQUE PRIMARY KEY,
                 first_name varchar(255),
                 last_name varchar(255),
                 email varchar(255),
-                username varchar(255),
-                password varchar(255),
-                salt varchar(255)
+                username varchar(255) UNIQUE NOT NULL,
+                password varchar(255) NOT NULL,
+                salt varchar(255) UNIQUE NOT NULL
             );
         ",
         )?;
