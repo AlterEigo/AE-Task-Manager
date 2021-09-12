@@ -102,7 +102,7 @@ impl UserService for UserManager {
             ")?;
         stmt.bind_by_name(":uname", &sqlite::Value::String(u))?;
         if let sqlite::State::Done = stmt.next()? {
-            return Err(Error::Unauthorized)
+            return Err(Error::Unauthorized);
         }
         let user: (String, String, String) = (
             stmt.read::<String>(0)?,
@@ -120,7 +120,24 @@ impl UserService for UserManager {
     }
 
     fn info(&self, id: SessionId) -> Result<User> {
-        Err(Error::NotImplemented)
+        let id = id.0;
+        let conn = self.db.as_ref().unwrap().connection()?;
+        let mut stmt = conn.prepare("
+            SELECT * FROM users WHERE user_id=:uid;
+            ")?;
+        stmt.bind_by_name(":uid", &sqlite::Value::String(id))?;
+        if let sqlite::State::Done = stmt.next()? {
+            return Err(Error::NotFound);
+        }
+        Ok(User {
+            id: stmt.read::<String>(0)?,
+            first_name: stmt.read::<String>(1)?,
+            last_name: stmt.read::<String>(2)?,
+            email: stmt.read::<String>(3)?,
+            username: stmt.read::<String>(4)?,
+            password: stmt.read::<String>(5)?,
+            salt: stmt.read::<String>(6)?,
+        })
     }
 
     fn sign_up(&self) -> Result<SignUpForm> {
