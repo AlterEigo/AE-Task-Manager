@@ -7,7 +7,7 @@ mod user;
 pub use user::UserManager;
 
 pub trait DbService {
-    fn connection(&self) -> &sqlite::Connection;
+    fn connection(&self) -> Result<sqlite::Connection>;
 }
 
 pub trait UserService {

@@ -1,12 +1,9 @@
 use crate::prelude::*;
 use crate::app::services::DbService;
 
-pub struct MainDb {
-    connection: sqlite::Connection,
-}
-
+pub struct MainDb;
 impl MainDb {
-    fn create_new_db(name: &str, flags: sqlite::OpenFlags) -> sqlite::Result<sqlite::Connection> {
+    fn create_new_db(name: &str, flags: sqlite::OpenFlags) -> Result<sqlite::Connection> {
         let connection = sqlite::Connection::open_with_flags(name, flags.set_create())?;
         connection.execute(
             "
@@ -24,7 +21,13 @@ impl MainDb {
         Ok(connection)
     }
 
-    pub fn new() -> Result<MainDb> {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
+impl DbService for MainDb {
+    fn connection(&self) -> Result<sqlite::Connection> {
         let flags = sqlite::OpenFlags::new().set_read_write().set_full_mutex();
         let dbname = "appdb.sqlite";
 
@@ -32,19 +35,6 @@ impl MainDb {
             Ok(conn) => Ok(conn),
             _ => MainDb::create_new_db(&dbname, flags),
         };
-        match conn {
-            Ok(conn) => Ok(MainDb { connection: conn }),
-            Err(error) => {
-                println!("Could not initialize connection.");
-                println!("Reason : {:?}", error);
-                Err(Error::InitializationError)
-            }
-        }
-    }
-}
-
-impl DbService for MainDb {
-    fn connection(&self) -> &sqlite::Connection {
-        &self.connection
+        conn
     }
 }
