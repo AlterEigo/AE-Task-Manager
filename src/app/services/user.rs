@@ -74,8 +74,7 @@ impl UserManager {
             .into_cursor();
         let new_uid = Self::unique_uid(db_conn);
         let salt = Self::unique_salt(db_conn);
-        cursor
-            .bind_by_name(vec![
+        let values = vec![
                 (":uid", sqlite::Value::String(new_uid)),
                 (":fname", sqlite::Value::String(form.first_name)),
                 (":lname", sqlite::Value::String(form.last_name)),
@@ -83,9 +82,10 @@ impl UserManager {
                 (":uname", sqlite::Value::String(form.username)),
                 (":password", sqlite::Value::String(form.password)),
                 (":salt", sqlite::Value::String(salt)),
-            ])
-            .expect("Could not bind form values.");
-        Err(Error::NotImplemented)
+        ];
+        match cursor.bind_by_name(values) {
+            _ => Err(Error::NotImplemented)
+        }
     }
 }
 
