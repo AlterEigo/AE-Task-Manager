@@ -1,4 +1,4 @@
-use crate::app::models::User;
+use crate::app::models::SessionId;
 use crate::prelude::{Error, Form, Result};
 
 pub struct SignUpForm<'a> {
@@ -7,13 +7,13 @@ pub struct SignUpForm<'a> {
     pub email: String,
     pub username: String,
     pub password: String,
-    on_submit: Option<Box<dyn FnOnce(Self) -> Result<User> + 'a>>,
+    on_submit: Option<Box<dyn FnOnce(Self) -> Result<SessionId> + 'a>>,
 }
 
 impl<'a> SignUpForm<'a> {
     pub fn new<F>(submit_action: F) -> Self
     where
-        F: 'a + FnOnce(Self) -> Result<User>,
+        F: 'a + FnOnce(Self) -> Result<SessionId>,
     {
         SignUpForm {
             on_submit: Some(Box::new(submit_action)),
@@ -61,8 +61,8 @@ impl<'a> SignUpForm<'a> {
     }
 }
 
-impl<'a> Form<User> for SignUpForm<'a> {
-    fn submit(self) -> Result<User> {
+impl<'a> Form<SessionId> for SignUpForm<'a> {
+    fn submit(self) -> Result<SessionId> {
         let cpy = SignUpForm {
             on_submit: None,
             ..self

@@ -63,7 +63,7 @@ impl UserManager {
         }
     }
 
-    fn register_user(form: SignUpForm, db_conn: &sqlite::Connection) -> Result<User> {
+    fn register_user(form: SignUpForm, db_conn: &sqlite::Connection) -> Result<SessionId> {
         let mut cursor = db_conn
             .prepare(
                 "
@@ -102,7 +102,7 @@ impl UserService for UserManager {
         if let Some(db) = &self.db {
             let conn = db.connection();
             let action =
-                move |form: SignUpForm| -> Result<User> { UserManager::register_user(form, conn) };
+                move |form: SignUpForm| -> Result<SessionId> { UserManager::register_user(form, conn) };
             Ok(SignUpForm::new(action))
         } else {
             Err(Error::DatabaseError)
