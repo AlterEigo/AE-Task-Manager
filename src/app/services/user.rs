@@ -1,3 +1,4 @@
+use sha2::Digest;
 use crate::prelude::*;
 use crate::app::{
     services::{DbService, UserService},
@@ -74,13 +75,15 @@ impl UserManager {
             ")?;
         let new_uid = Self::unique_uid(db_conn);
         let salt = Self::unique_salt(db_conn);
+        let pass_hash = format!("{pass}{salt}", pass=form.password, salt=salt);
+        let pass_hash = sha2::Sha256::digest(pass_hash.as_bytes());
         let values = vec![
                 (":uid", sqlite::Value::String(new_uid.clone())),
                 (":fname", sqlite::Value::String(form.first_name)),
                 (":lname", sqlite::Value::String(form.last_name)),
                 (":email", sqlite::Value::String(form.email)),
                 (":uname", sqlite::Value::String(form.username)),
-                (":password", sqlite::Value::String(form.password)),
+                (":password", sqlite::Value::String(format!("{:x}", pass_hash))),
                 (":salt", sqlite::Value::String(salt)),
         ];
         for pair in values.iter() {
