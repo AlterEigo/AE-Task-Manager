@@ -98,7 +98,7 @@ impl UserService for UserManager {
     fn authenticate(&self, u: String, p: String) -> Result<SessionId> {
         let conn = self.db.as_ref().unwrap().connection()?;
         let mut stmt = conn.prepare("
-            SELECT (id, salt, password) FROM users WHERE username=:uname;
+            SELECT user_id, salt, password FROM users WHERE username=:uname;
             ")?;
         stmt.bind_by_name(":uname", &sqlite::Value::String(u))?;
         if let sqlite::State::Done = stmt.next()? {
@@ -111,7 +111,8 @@ impl UserService for UserManager {
         );
         let hash = format!("{pass}{salt}", pass=p, salt=user.1);
         let hash = sha2::Sha256::digest(hash.as_bytes());
-        if format!("{:x}", hash) == user.2 {
+        let hash = format!("{:x}", hash);
+        if hash == user.2 {
             Ok(SessionId(user.0))
         } else {
             Err(Error::Unauthorized)
