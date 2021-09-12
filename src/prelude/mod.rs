@@ -1,10 +1,10 @@
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug)]
 pub enum Error {
     NotImplemented,
     Unauthorized,
     NotFound,
     AlreadySubmitted,
-    DatabaseError,
+    DatabaseError(sqlite::Error),
     ServiceNotBound(&'static str),
     BuilderError(&'static str),
     InitializationError,
