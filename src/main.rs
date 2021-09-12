@@ -9,7 +9,6 @@ use std::rc::Rc;
 
 use crate::app::{
     databases::MainDb,
-    UserManager,
     services::*
 };
 
