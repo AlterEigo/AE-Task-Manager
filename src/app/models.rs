@@ -1,11 +1,12 @@
 #[derive(Default, Debug)]
 pub struct User {
-    first_name: String,
-    last_name: String,
-    id: String,
-    email: String,
-    password: String,
-    salt: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub id: String,
+    pub email: String,
+    pub username: String,
+    pub password: String,
+    pub salt: String,
 }
 
 pub struct Task;
